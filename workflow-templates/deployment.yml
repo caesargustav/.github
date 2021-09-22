@@ -1,0 +1,33 @@
+name: Deployment to Bagesi
+
+on:
+  push:
+    branches: [ $default-branch ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+          check-latest: true
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install NPM dependencies
+        run: npm install --global yarn && yarn
+
+      - name: Compile assets for production
+        run: yarn run production
+
+      - name: Deploy to production
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: musps/action-deployer-php@v0.2.0
+        with:
+          args: deploy example.com
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}

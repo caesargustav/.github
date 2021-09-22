@@ -1,0 +1,21 @@
+name: "Notify Mattermost"
+description: "Sends a message to provided Mattermost webhook URL about a deployment state"
+inputs:
+  state:
+    description: 'What is the state of deployment?'
+    required: true
+    default: 'started'
+  mattermost-url:
+    description: 'The Mattermost webhook URL used to send the message'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        cp ${{ github.action_path }}/deployment-${{ inputs.state }}.json mattermost.json
+        sed -i 's|{{ github.repository }}|${{ github.repository }}|' mattermost.json
+      shell: bash
+
+    - uses: mattermost/action-mattermost-notify@1.1.0
+      env:
+        MATTERMOST_WEBHOOK_URL: ${{ inputs.mattermost-url }}

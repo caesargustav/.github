@@ -1,0 +1,9 @@
+{
+  "attachments": [
+    {
+      "fallback": "{{ github.repository }} deployment successful.",
+      "color": "#22c55e",
+      "text": "{{ github.repository }} deployment successful."
+    }
+  ]
+}

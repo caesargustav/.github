@@ -1,0 +1,9 @@
+{
+  "attachments": [
+    {
+      "fallback": "{{ github.repository }} deployment started.",
+      "color": "#d4d4d4",
+      "text": "{{ github.repository }} deployment started."
+    }
+  ]
+}
