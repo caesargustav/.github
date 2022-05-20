@@ -3,7 +3,7 @@
     {
       "fallback": "{{ github.repository }} deployment failed.",
       "color": "#ef4444",
-      "text": "{{ github.repository }} deployment failed."
+      "text": "{{ github.repository }} deployment failed.  [Failed job]({{ github.job_url }})"
     }
   ]
 }
