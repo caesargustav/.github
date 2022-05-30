@@ -15,8 +15,5 @@ runs:
         cp ${{ github.action_path }}/deployment-${{ inputs.state }}.json mattermost.json
         sed -i 's|{{ github.repository }}|${{ github.repository }}|' mattermost.json
         sed -i 's|{{ github.job_url }}|${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|' mattermost.json
+        curl -i -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ inputs.mattermost-url }}
       shell: bash
-
-    - uses: mattermost/action-mattermost-notify@1.1.0
-      env:
-        MATTERMOST_WEBHOOK_URL: ${{ inputs.mattermost-url }}
