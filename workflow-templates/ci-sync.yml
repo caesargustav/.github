@@ -1,0 +1,55 @@
+# CI Sync workflow:
+#
+# Whenever new changes are pushed to the main branch this workflow will:
+# 1. Automatically create a pull request for the FROM_BRANCH to TO_BRANCH
+# 2. Auto merge the FROM_BRANCH into TO_BRANCH
+# 3. If merge conflicts are present the pull request is not auto merged
+# 4. The person who triggered the workflow will receive a run failed notification mail
+# 5. Any merge conflicts have to be resolved manually and then the PR can be merged in GitHub
+
+name: CI Sync
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  FROM_BRANCH: env-live
+  TO_BRANCH: main
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Pull request
+        continue-on-error: true
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: ${{ env.FROM_BRANCH }}
+          destination_branch: ${{ env.TO_BRANCH }}
+          pr_title: 'ci: sync ${{ env.FROM_BRANCH }} into ${{ env.TO_BRANCH }}'
+          pr_body: ':robot: Automated PR to sync the changes from `${{ env.FROM_BRANCH }}` branch to `${{ env.TO_BRANCH }}`.'
+          pr_label: 'auto-pr'
+          pr_draft: false
+          pr_allow_empty: false
+
+  merge-pull-request:
+    needs:
+      - create-pull-request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main # needs to be explicitly set to pull the latest changes
+
+      # https://cli.github.com/manual/gh_pr_merge
+      - name: Merge
+        run: gh pr merge --auto -m -d ${{ env.FROM_BRANCH }}
+        env:
+          GH_TOKEN: ${{ github.token }}
