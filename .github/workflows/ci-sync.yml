@@ -17,8 +17,8 @@ on:
   workflow_call:
 
 env:
-  FROM_BRANCH: env-live
-  TO_BRANCH: main
+  FROM_BRANCH: ${{ github.event.FROM_BRANCH || 'env-live' }}
+  TO_BRANCH: ${{ github.event.TO_BRANCH || 'main' }}
 
 jobs:
   create-pull-request:
