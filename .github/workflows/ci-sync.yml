@@ -23,12 +23,12 @@ env:
 jobs:
   create-pull-request:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Pull request
+        continue-on-error: true
         uses: repo-sync/pull-request@v2
         with:
           source_branch: ${{ env.FROM_BRANCH }}
@@ -43,7 +43,6 @@ jobs:
     needs:
       - create-pull-request
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -52,6 +51,7 @@ jobs:
 
       # https://cli.github.com/manual/gh_pr_merge
       - name: Merge
+        continue-on-error: true
         run: gh pr merge --auto -m -d ${{ env.FROM_BRANCH }}
         env:
           GH_TOKEN: ${{ github.token }}
