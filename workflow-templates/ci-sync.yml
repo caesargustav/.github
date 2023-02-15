@@ -46,7 +46,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: main # needs to be explicitly set to pull the latest changes
+          ref: ${{ env.TO_BRANCH }} # needs to be explicitly set to pull the latest changes
 
       # https://cli.github.com/manual/gh_pr_merge
       - name: Merge
