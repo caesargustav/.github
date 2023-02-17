@@ -14,10 +14,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+  workflow_call:
 
 env:
-  FROM_BRANCH: env-live
-  TO_BRANCH: main
+  FROM_BRANCH: ${{ github.event.FROM_BRANCH || 'env-live' }}
+  TO_BRANCH: ${{ github.event.TO_BRANCH || 'main' }}
 
 jobs:
   create-pull-request:
@@ -46,10 +47,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: main # needs to be explicitly set to pull the latest changes
+          ref: ${{ env.TO_BRANCH }} # needs to be explicitly set to pull the latest changes
 
       # https://cli.github.com/manual/gh_pr_merge
       - name: Merge
+        continue-on-error: true
         run: gh pr merge --auto -m -d ${{ env.FROM_BRANCH }}
         env:
           GH_TOKEN: ${{ github.token }}
